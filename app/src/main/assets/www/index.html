@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <script>
+window.QD_FILL=true; /* true = estica o jogo para preencher a tela; false = mantem proporcao 16:10 com barras pretas */
 (function(){
 var ok=true;
 try{ok=!!(window.CSS&&CSS.supports&&CSS.supports('width','1cqw')&&(window.AudioContext||window.webkitAudioContext)&&window.Promise&&window.Map);}catch(e){ok=false}
@@ -723,7 +724,7 @@ const wrap=$('wrap'),sa=document.createElement('div');
 sa.style.cssText='position:fixed;inset:0;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);visibility:hidden;pointer-events:none';document.body.appendChild(sa);
 function fit(){const vv=window.visualViewport,vw=vv?vv.width:innerWidth,vh=vv?vv.height:innerHeight,c=getComputedStyle(sa),t=parseFloat(c.paddingTop)||0,r=parseFloat(c.paddingRight)||0,b=parseFloat(c.paddingBottom)||0,l=parseFloat(c.paddingLeft)||0;
 const AW=vw-l-r,AH=vh-t-b,rot=matchMedia('(pointer:coarse)').matches&&vh>vw*1.1,W=rot?AH:AW,H=rot?AW:AH,k=Math.min(W/480,H/300);
-wrap.style.width=Math.floor(480*k)+'px';wrap.style.height=Math.floor(300*k)+'px';wrap.style.left=(l+AW/2)+'px';wrap.style.top=(t+AH/2)+'px';wrap.style.transform='translate(-50%,-50%)'+(rot?' rotate(90deg)':'');window.ROT=rot}
+wrap.style.width=Math.floor(480*k)+'px';wrap.style.height=Math.floor(300*k)+'px';wrap.style.left=(l+AW/2)+'px';wrap.style.top=(t+AH/2)+'px';var fw=Math.floor(480*k),fh=Math.floor(300*k),sc=window.QD_FILL?' scale('+(W/fw)+','+(H/fh)+')':'';wrap.style.transform='translate(-50%,-50%)'+(rot?' rotate(90deg)':'')+sc;window.ROT=rot}
 ['resize','orientationchange'].forEach(e=>addEventListener(e,fit));if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();
 /* botão de tela cheia em pixel art (só aparece se o navegador permitir) */
 function icoSpr(pts){const M=Array.from({length:9},()=>Array(12).fill('.'));pts.forEach(p=>{M[p[0]][p[1]]='w'});const m=M.map(r=>r.join('')),g=(r,c)=>m[r-1]&&m[r-1][c-1]==='w'?1:0,
@@ -1484,8 +1485,8 @@ const ensure=id=>{const el=$(id);if(!ST.tc.pos[id]){const l=loc(el);ST.tc.pos[id
 $('wrap').addEventListener('pointerdown',e=>{if(!window.EDITING)return;const t=e.target.closest('#pad,#joy,#ebox,#cam,#runb,#snd,#fs,#pz');if(!t)return;e.preventDefault();e.stopPropagation();
 if(t.id==='pad'||t.id==='joy'||t.id==='ebox'){ensure(ST.tc.joy?'joy':'pad');ensure('ebox')}else ensure(t.id);applyCfg();
 const q=ST.tc.pos[t.id];drag={id:t.id,sx:e.clientX,sy:e.clientY,x:q.x,y:q.y,pid:e.pointerId};try{$('wrap').setPointerCapture(e.pointerId)}catch(_){}},true);
-$('wrap').addEventListener('pointermove',e=>{if(!drag||!window.EDITING)return;const w=$('wrap'),r=w.getBoundingClientRect(),k=(window.ROT?r.height:r.width)/W();let dx=e.clientX-drag.sx,dy=e.clientY-drag.sy,lx,ly;
-if(window.ROT){lx=dy/k;ly=-dx/k}else{lx=dx/k;ly=dy/k}const el=$(drag.id),ew=el.offsetWidth/cq(),eh=el.offsetHeight/cq();
+$('wrap').addEventListener('pointermove',e=>{if(!drag||!window.EDITING)return;const w=$('wrap'),r=w.getBoundingClientRect(),k=(window.ROT?r.height:r.width)/W(),k2=(window.ROT?r.width:r.height)/w.offsetHeight;let dx=e.clientX-drag.sx,dy=e.clientY-drag.sy,lx,ly;
+if(window.ROT){lx=dy/k;ly=-dx/k2}else{lx=dx/k;ly=dy/k2}const el=$(drag.id),ew=el.offsetWidth/cq(),eh=el.offsetHeight/cq();
 ST.tc.pos[drag.id]={x:Math.max(0,Math.min(100-ew,drag.x+lx/cq())),y:Math.max(0,Math.min(62.5-eh,drag.y+ly/cq()))};applyCfg()},true);
 const up=()=>{drag=null};$('wrap').addEventListener('pointerup',up,true);$('wrap').addEventListener('pointercancel',up,true);
 
