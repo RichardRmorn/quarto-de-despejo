@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "br.com.quartodedespejo"
-        minSdk 16          // Android 4.1 (instala); o jogo exige WebView moderno (veja README)
+        minSdk 21          // Android 5.0 (instala); o jogo exige WebView moderno (veja README)
         targetSdk 34
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.0-1"
     }
 
     signingConfigs {
