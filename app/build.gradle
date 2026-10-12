@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'br.com.quartodedespejo'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "br.com.quartodedespejo"
+        minSdk 16          // Android 4.1 (instala); o jogo exige WebView moderno (veja README)
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        release {
+            // Preenchido por variaveis de ambiente (ver README / workflow). Sem elas, usa a chave debug.
+            def ks = System.getenv("QD_KEYSTORE")
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv("QD_STOREPASS")
+                keyAlias System.getenv("QD_KEYALIAS")
+                keyPassword System.getenv("QD_KEYPASS")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig System.getenv("QD_KEYSTORE") ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    // O HTML ja tem videos em base64: nao comprimir evita estourar memoria ao carregar.
+    androidResources {
+        noCompress 'html'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint { abortOnError false }
+}
